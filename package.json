@@ -84,5 +84,11 @@
       "\\.snap$",
       "<rootDir>/node_modules/"
     ]
+  },
+  "prettier": {
+    "singleQuote": false,
+    "semi": false,
+    "trailingComma": "es5",
+    "printWidth": 120
   }
 }
