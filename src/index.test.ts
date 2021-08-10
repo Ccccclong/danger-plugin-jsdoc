@@ -1,4 +1,4 @@
-import jsdoc from "./index"
+import { jsdoc } from "./index"
 
 declare const global: any
 
@@ -24,8 +24,6 @@ describe("jsdoc()", () => {
 
     jsdoc()
 
-    expect(global.message).toHaveBeenCalledWith(
-      "PR Title: My Test Title",
-    )
+    expect(global.message).toHaveBeenCalledWith("PR Title: My Test Title")
   })
 })
