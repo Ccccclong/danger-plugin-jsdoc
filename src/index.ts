@@ -6,17 +6,16 @@ export declare function warn(message: string): void
 export declare function fail(message: string): void
 export declare function markdown(message: string): void
 
-import { extname } from "path"
-
-const extensions = [".js"]
+const includes = ["*.js"]
 
 /**
  * This plugin raises a warning if a js file has been modified without it&#39;s JSDoc being updated.
  */
 export async function jsdoc() {
-  // Replace this with the code from your Dangerfile
+  const includeRegExps = includes.map(globToRegExp)
+
   const files = [...danger.git.modified_files, ...danger.git.created_files]
-  const jsFiles = files.filter(file => extensions.includes(extname(file)))
+  const jsFiles = files.filter(file => includeRegExps.some(regExp => regExp.test(file)))
   const areFilesSafe = await Promise.all(jsFiles.map(checkFile))
   const dangerousFiles = jsFiles.filter((_, index) => !areFilesSafe[index])
   if (dangerousFiles.length > 0) {
@@ -48,4 +47,26 @@ function extractJsdoc(content: string): string[] {
 
 function generateMarkdown(files: string[]): string {
   return `Files that have been changed without updating its JSDoc\n\n${files.map(file => `- ${file}`).join("\n")}`
+}
+
+/**
+ * Creates a RegExp from the given string, converting asterisks to .* expressions,
+ * and escaping all other characters.
+ */
+function globToRegExp(glob: string): RegExp {
+  return new RegExp(
+    "^" +
+      glob
+        .split(/\*+/)
+        .map(regExpEscape)
+        .join(".*") +
+      "$"
+  )
+}
+
+/**
+ * RegExp-escapes all characters in the given string.
+ */
+function regExpEscape(str: string): string {
+  return str.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&")
 }
