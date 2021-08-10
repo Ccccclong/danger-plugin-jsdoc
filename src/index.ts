@@ -21,7 +21,7 @@ export async function jsdoc() {
   const dangerousFiles = jsFiles.filter((_, index) => !areFilesSafe[index])
   if (dangerousFiles.length > 0) {
     warn("😶 Some js files have been changed without updating the JSDoc")
-    markdown(dangerousFiles.join("\n\n"))
+    markdown(generateMarkdown(dangerousFiles))
   }
 }
 
@@ -44,4 +44,8 @@ async function checkFile(file: string): Promise<boolean> {
 function extractJsdoc(content: string): string[] {
   const matches = content.match(/\/\*\*\s*\n([^\*]|(\*(?!\/)))*\*\//g)
   return matches ?? []
+}
+
+function generateMarkdown(files: string[]): string {
+  return `Files that have been changed without updating its JSDoc\n\n${files.map(file => `- ${file}`).join("\n")}`
 }
