@@ -6,18 +6,30 @@ export declare function warn(message: string): void
 export declare function fail(message: string): void
 export declare function markdown(message: string): void
 
-const includes = ["*.js"]
+interface Options {
+  includes: string[]
+  excludes: string[]
+}
+const defaultOptions: Options = {
+  includes: ["*.js"],
+  excludes: [],
+}
 
 /**
  * This plugin raises a warning if a js file has been modified without it&#39;s JSDoc being updated.
  */
-export async function jsdoc() {
+export async function jsdoc(options?: Partial<Options>) {
+  const { includes, excludes } = { ...defaultOptions, ...options }
+
   const includeRegExps = includes.map(globToRegExp)
+  const excludeRegExps = excludes.map(globToRegExp)
 
   const files = [...danger.git.modified_files, ...danger.git.created_files]
-  const jsFiles = files.filter(file => includeRegExps.some(regExp => regExp.test(file)))
-  const areFilesSafe = await Promise.all(jsFiles.map(checkFile))
-  const dangerousFiles = jsFiles.filter((_, index) => !areFilesSafe[index])
+  const applicableFiles = files.filter(
+    file => includeRegExps.some(regExp => regExp.test(file)) && !excludeRegExps.some(regExp => regExp.test(file))
+  )
+  const areFilesSafe = await Promise.all(applicableFiles.map(checkFile))
+  const dangerousFiles = applicableFiles.filter((_, index) => !areFilesSafe[index])
   if (dangerousFiles.length > 0) {
     warn("😶 Some js files have been changed without updating the JSDoc")
     markdown(generateMarkdown(dangerousFiles))
