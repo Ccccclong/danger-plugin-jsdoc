@@ -36,6 +36,11 @@ export async function jsdoc(options?: Partial<Options>) {
   }
 }
 
+/**
+ * Checks if a file has been modified without its being JSDoc being updated
+ * @param file Filename
+ * @returns If the file has been modified without its being JSDoc being updated
+ */
 async function checkFile(file: string): Promise<boolean> {
   const diff = await danger.git.diffForFile(file)
   if (!diff) {
@@ -52,11 +57,21 @@ async function checkFile(file: string): Promise<boolean> {
   return JSON.stringify(beforeJsdoc) !== JSON.stringify(afterJsdoc)
 }
 
+/**
+ * Extract JSDocs from a file's content
+ * @param content Content of the file
+ * @returns JSDocs of the file
+ */
 function extractJsdoc(content: string): string[] {
   const matches = content.match(/\/\*\*\s*\n([^\*]|(\*(?!\/)))*\*\//g)
   return matches ?? []
 }
 
+/**
+ * Generate a markdown list listing files that have been modified without the JSDoc being updated
+ * @param files Filenames
+ * @returns Markdown list
+ */
 function generateMarkdown(files: string[]): string {
   return `Files that have been changed without updating its JSDoc\n\n${files.map(file => `- ${file}`).join("\n")}`
 }
