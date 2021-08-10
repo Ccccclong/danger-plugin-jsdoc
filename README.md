@@ -18,10 +18,18 @@ At a glance:
 
 ```js
 // dangerfile.js
-import jsdoc from 'danger-plugin-jsdoc'
+import jsdoc from "danger-plugin-jsdoc"
 
-jsdoc()
+jsdoc({ includes: ["*.js"], excludes: "*.spec.js" })
 ```
+
+Confiuguration:
+
+| Option   | Type     | Deafult    | Desciption                                                   |
+| -------- | -------- | ---------- | ------------------------------------------------------------ |
+| includes | string[] | `["*.js"]` | Files to be checked                                          |
+| excludes | string[] | `[]`       | Files that should not be checked even if it is in `includes` |
+
 ## Changelog
 
 See the GitHub [release history](https://github.com/Ccccclong/danger-plugin-jsdoc/releases).
