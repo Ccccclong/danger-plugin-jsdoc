@@ -27,8 +27,8 @@ Confiuguration:
 
 | Option   | Type     | Deafult       | Desciption                                                                         |
 | -------- | -------- | ------------- | ---------------------------------------------------------------------------------- |
-| includes | string[] | `["**/*.js"]` | Glob pattern to match files to be checked                                          |
-| excludes | string[] | `[]`          | Glob pattern to match files that should not be checked even if it is in `includes` |
+| includes | string[] | `["**/*.js"]` | Glob patterns to match files to be checked                                          |
+| excludes | string[] | `[]`          | Glob patterns to match files that should not be checked even if it is in `includes` |
 
 ## Changelog
 

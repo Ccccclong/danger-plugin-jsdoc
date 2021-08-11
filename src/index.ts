@@ -9,9 +9,10 @@ export declare function markdown(message: string): void
 import * as minimatch from "minimatch"
 
 interface Options {
-  includes: string[]
-  excludes: string[]
+  includes: string[] // Glob patterns to match files to be checked
+  excludes: string[] // Glob patterns to match files that should not be checked even if it is in `includes`
 }
+
 const defaultOptions: Options = {
   includes: ["**/*.js"],
   excludes: [],
@@ -19,6 +20,7 @@ const defaultOptions: Options = {
 
 /**
  * This plugin raises a warning if a js file has been modified without it&#39;s JSDoc being updated.
+ * @param options Configuration options
  */
 export async function jsdoc(options?: Partial<Options>) {
   const { includes, excludes } = { ...defaultOptions, ...options }
