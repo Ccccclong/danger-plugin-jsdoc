@@ -1,4 +1,4 @@
-import { jsdoc, markdown, warn } from "./index"
+import { jsdoc } from "./index"
 
 declare const global: any
 
@@ -29,8 +29,8 @@ describe("jsdoc()", () => {
   }
 
   beforeEach(() => {
-    modifiedFile = "modified.js"
-    createdFile = "created.js"
+    modifiedFile = "src/modified.js"
+    createdFile = "src/created.js"
     mockModifiedFileDiff = {
       before: `
 /**

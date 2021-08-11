@@ -90,5 +90,8 @@
     "semi": false,
     "trailingComma": "es5",
     "printWidth": 120
+  },
+  "dependencies": {
+    "minimatch": "^3.0.4"
   }
 }

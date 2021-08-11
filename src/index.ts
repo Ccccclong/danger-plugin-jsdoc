@@ -6,12 +6,14 @@ export declare function warn(message: string): void
 export declare function fail(message: string): void
 export declare function markdown(message: string): void
 
+import * as minimatch from "minimatch"
+
 interface Options {
   includes: string[]
   excludes: string[]
 }
 const defaultOptions: Options = {
-  includes: ["*.js"],
+  includes: ["**/*.js"],
   excludes: [],
 }
 
@@ -21,12 +23,9 @@ const defaultOptions: Options = {
 export async function jsdoc(options?: Partial<Options>) {
   const { includes, excludes } = { ...defaultOptions, ...options }
 
-  const includeRegExps = includes.map(globToRegExp)
-  const excludeRegExps = excludes.map(globToRegExp)
-
   const files = [...danger.git.modified_files, ...danger.git.created_files]
   const applicableFiles = files.filter(
-    file => includeRegExps.some(regExp => regExp.test(file)) && !excludeRegExps.some(regExp => regExp.test(file))
+    file => includes.some(include => minimatch(file, include)) && !excludes.some(exclude => minimatch(file, exclude))
   )
   const areFilesSafe = await Promise.all(applicableFiles.map(checkFile))
   const dangerousFiles = applicableFiles.filter((_, index) => !areFilesSafe[index])
@@ -74,26 +73,4 @@ function extractJsdoc(content: string): string[] {
  */
 function generateMarkdown(files: string[]): string {
   return `Files that have been changed without updating its JSDoc\n\n${files.map(file => `- ${file}`).join("\n")}`
-}
-
-/**
- * Creates a RegExp from the given string, converting asterisks to .* expressions,
- * and escaping all other characters.
- */
-function globToRegExp(glob: string): RegExp {
-  return new RegExp(
-    "^" +
-      glob
-        .split(/\*+/)
-        .map(regExpEscape)
-        .join(".*") +
-      "$"
-  )
-}
-
-/**
- * RegExp-escapes all characters in the given string.
- */
-function regExpEscape(str: string): string {
-  return str.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&")
 }
