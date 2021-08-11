@@ -20,15 +20,15 @@ At a glance:
 // dangerfile.js
 import jsdoc from "danger-plugin-jsdoc"
 
-jsdoc({ includes: ["*.js"], excludes: "*.spec.js" })
+jsdoc({ includes: ["**/*.js"], excludes: "**/*.spec.js" })
 ```
 
 Confiuguration:
 
-| Option   | Type     | Deafult    | Desciption                                                   |
-| -------- | -------- | ---------- | ------------------------------------------------------------ |
-| includes | string[] | `["*.js"]` | Files to be checked                                          |
-| excludes | string[] | `[]`       | Files that should not be checked even if it is in `includes` |
+| Option   | Type     | Deafult       | Desciption                                                                         |
+| -------- | -------- | ------------- | ---------------------------------------------------------------------------------- |
+| includes | string[] | `["**/*.js"]` | Glob pattern to match files to be checked checked                                  |
+| excludes | string[] | `[]`          | Glob pattern to match files that should not be checked even if it is in `includes` |
 
 ## Changelog
 
