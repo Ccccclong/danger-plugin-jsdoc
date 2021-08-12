@@ -23,10 +23,10 @@ import jsdoc from "danger-plugin-jsdoc"
 jsdoc({ includes: ["**/*.js"], excludes: "**/*.spec.js" })
 ```
 
-Confiuguration:
+Configuration:
 
-| Option   | Type     | Deafult       | Desciption                                                                         |
-| -------- | -------- | ------------- | ---------------------------------------------------------------------------------- |
+| Option   | Type     | Default       | Description                                                                         |
+| -------- | -------- | ------------- | ----------------------------------------------------------------------------------- |
 | includes | string[] | `["**/*.js"]` | Glob patterns to match files to be checked                                          |
 | excludes | string[] | `[]`          | Glob patterns to match files that should not be checked even if it is in `includes` |
 
