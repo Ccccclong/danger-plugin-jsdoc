@@ -20,15 +20,20 @@ At a glance:
 // dangerfile.js
 import jsdoc from "danger-plugin-jsdoc"
 
-jsdoc({ includes: ["**/*.js"], excludes: "**/*.spec.js" })
+jsdoc({
+  includes: ["**/*.js"],
+  excludes: ["**/*.spec.js"],
+  warningMessage: "Oops, you may need to update your JSDoc",
+})
 ```
 
 Configuration:
 
-| Option   | Type     | Default       | Description                                                                         |
-| -------- | -------- | ------------- | ----------------------------------------------------------------------------------- |
-| includes | string[] | `["**/*.js"]` | Glob patterns to match files to be checked                                          |
-| excludes | string[] | `[]`          | Glob patterns to match files that should not be checked even if it is in `includes` |
+| Option         | Type     | Default                                                           | Description                                                                         |
+| -------------- | -------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| includes       | string[] | `["**/*.js"]`                                                     | Glob patterns to match files to be checked                                          |
+| excludes       | string[] | `[]`                                                              | Glob patterns to match files that should not be checked even if it is in `includes` |
+| warningMessage | string   | `"😶 Some js files have been changed without updating the JSDoc"` | Warning message that will appear in the PR comment                                  |
 
 ## Changelog
 

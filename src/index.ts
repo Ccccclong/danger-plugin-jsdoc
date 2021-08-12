@@ -11,11 +11,13 @@ import * as minimatch from "minimatch"
 interface Options {
   includes: string[] // Glob patterns to match files to be checked
   excludes: string[] // Glob patterns to match files that should not be checked even if it is in `includes`
+  warningMessage: string // Warning message that will appear in the PR comment
 }
 
 const defaultOptions: Options = {
   includes: ["**/*.js"],
   excludes: [],
+  warningMessage: "😶 Some js files have been changed without updating the JSDoc",
 }
 
 /**
@@ -23,7 +25,7 @@ const defaultOptions: Options = {
  * @param options Configuration options
  */
 export async function jsdoc(options?: Partial<Options>) {
-  const { includes, excludes } = { ...defaultOptions, ...options }
+  const { includes, excludes, warningMessage } = { ...defaultOptions, ...options }
 
   const files = [...danger.git.modified_files, ...danger.git.created_files]
   const applicableFiles = files.filter(
@@ -32,7 +34,7 @@ export async function jsdoc(options?: Partial<Options>) {
   const areFilesSafe = await Promise.all(applicableFiles.map(checkFile))
   const dangerousFiles = applicableFiles.filter((_, index) => !areFilesSafe[index])
   if (dangerousFiles.length > 0) {
-    warn("😶 Some js files have been changed without updating the JSDoc")
+    warn(warningMessage)
     markdown(generateMarkdown(dangerousFiles))
   }
 }
