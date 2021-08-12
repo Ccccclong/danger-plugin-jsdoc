@@ -34,7 +34,7 @@ export async function jsdoc(options?: Partial<Options>) {
   const areFilesSafe = await Promise.all(applicableFiles.map(checkFile))
   const dangerousFiles = applicableFiles.filter((_, index) => !areFilesSafe[index])
   for (const dangerousFile of dangerousFiles) {
-    warn(warningMessage, dangerousFile, 1)
+    warn(warningMessage, dangerousFile, await getFileNumLines(dangerousFile))
   }
 }
 
@@ -67,4 +67,14 @@ async function checkFile(file: string): Promise<boolean> {
 function extractJsdoc(content: string): string[] {
   const matches = content.match(/\/\*\*\s*\n([^\*]|(\*(?!\/)))*\*\//g)
   return matches ?? []
+}
+
+/**
+ * Count the number of lines a file contains
+ * @param file Filename
+ * @returns Number of lines the file contains
+ */
+async function getFileNumLines(file: string): Promise<number> {
+  const diff = await danger.git.diffForFile(file)
+  return diff?.after.split("\n").length || 0
 }
