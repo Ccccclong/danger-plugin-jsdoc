@@ -12,12 +12,14 @@ interface Options {
   includes: string[] // Glob patterns to match files to be checked
   excludes: string[] // Glob patterns to match files that should not be checked even if it is in `includes`
   warningMessage: string // Warning message that will appear in the PR comment
+  listTitle: string // Title of the list of files changed without updating the JSDoc
 }
 
 const defaultOptions: Options = {
   includes: ["**/*.js"],
   excludes: [],
   warningMessage: "Some js files have been changed without updating the JSDoc",
+  listTitle: "Files that have been changed without updating its JSDoc",
 }
 
 /**
@@ -25,7 +27,7 @@ const defaultOptions: Options = {
  * @param options Configuration options
  */
 export async function jsdoc(options?: Partial<Options>) {
-  const { includes, excludes, warningMessage } = { ...defaultOptions, ...options }
+  const { includes, excludes, warningMessage, listTitle } = { ...defaultOptions, ...options }
 
   const files = [...danger.git.modified_files, ...danger.git.created_files]
   const applicableFiles = files.filter(
@@ -35,7 +37,7 @@ export async function jsdoc(options?: Partial<Options>) {
   const dangerousFiles = applicableFiles.filter((_, index) => !areFilesSafe[index])
   if (dangerousFiles.length > 0) {
     warn(warningMessage)
-    markdown(generateMarkdown(dangerousFiles))
+    markdown(generateMarkdown(listTitle, dangerousFiles))
   }
 }
 
@@ -72,9 +74,10 @@ function extractJsdoc(content: string): string[] {
 
 /**
  * Generate a markdown list listing files that have been modified without the JSDoc being updated
+ * @param title List title
  * @param files Filenames
  * @returns Markdown list
  */
-function generateMarkdown(files: string[]): string {
-  return `Files that have been changed without updating its JSDoc\n\n${files.map(file => `- ${file}`).join("\n")}`
+function generateMarkdown(title: string, files: string[]): string {
+  return `${title}\n\n${files.map(file => `- ${file}`).join("\n")}`
 }
