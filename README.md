@@ -24,18 +24,16 @@ jsdoc({
   includes: ["**/*.js"],
   excludes: ["**/*.spec.js"],
   warningMessage: "Oops, you may need to update your JSDoc",
-  listTitle: "List of files you need to update",
 })
 ```
 
 Configuration:
 
-| Option         | Type     | Default                                                        | Description                                                                         |
-| -------------- | -------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| includes       | string[] | `["**/*.js"]`                                                  | Glob patterns to match files to be checked                                          |
-| excludes       | string[] | `[]`                                                           | Glob patterns to match files that should not be checked even if it is in `includes` |
-| warningMessage | string   | `"Some js files have been changed without updating the JSDoc"` | Warning message that will appear in the PR comment                                  |
-| listTitle      | string   | `"Files that have been changed without updating its JSDoc"`    | Title of the list of files changed without updating the JSDoc                       |
+| Option         | Type     | Default                                                                                              | Description                                                                         |
+| -------------- | -------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| includes       | string[] | `["**/*.js"]`                                                                                        | Glob patterns to match files to be checked                                          |
+| excludes       | string[] | `[]`                                                                                                 | Glob patterns to match files that should not be checked even if it is in `includes` |
+| warningMessage | string   | `"This js file have been changed without updating its JSDoc, please update it's JSDoc if necessary"` | Warning message that will appear in the PR file comment                             |
 
 ## Changelog
 

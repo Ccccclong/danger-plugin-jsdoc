@@ -1,10 +1,10 @@
 // Provides dev-time type structures for  `danger` - doesn't affect runtime.
 import { DangerDSLType } from "../node_modules/danger/distribution/dsl/DangerDSL"
 declare var danger: DangerDSLType
-export declare function message(message: string): void
-export declare function warn(message: string): void
-export declare function fail(message: string): void
-export declare function markdown(message: string): void
+export declare function message(message: string, file?: string, line?: number): void
+export declare function warn(message: string, file?: string, line?: number): void
+export declare function fail(message: string, file?: string, line?: number): void
+export declare function markdown(message: string, file?: string, line?: number): void
 
 import * as minimatch from "minimatch"
 
@@ -12,14 +12,12 @@ interface Options {
   includes: string[] // Glob patterns to match files to be checked
   excludes: string[] // Glob patterns to match files that should not be checked even if it is in `includes`
   warningMessage: string // Warning message that will appear in the PR comment
-  listTitle: string // Title of the list of files changed without updating the JSDoc
 }
 
 const defaultOptions: Options = {
   includes: ["**/*.js"],
   excludes: [],
-  warningMessage: "Some js files have been changed without updating the JSDoc",
-  listTitle: "Files that have been changed without updating its JSDoc",
+  warningMessage: "This js file have been changed without updating it's JSDoc, please update its JSDoc if necessary",
 }
 
 /**
@@ -27,7 +25,7 @@ const defaultOptions: Options = {
  * @param options Configuration options
  */
 export async function jsdoc(options?: Partial<Options>) {
-  const { includes, excludes, warningMessage, listTitle } = { ...defaultOptions, ...options }
+  const { includes, excludes, warningMessage } = { ...defaultOptions, ...options }
 
   const files = [...danger.git.modified_files, ...danger.git.created_files]
   const applicableFiles = files.filter(
@@ -35,9 +33,8 @@ export async function jsdoc(options?: Partial<Options>) {
   )
   const areFilesSafe = await Promise.all(applicableFiles.map(checkFile))
   const dangerousFiles = applicableFiles.filter((_, index) => !areFilesSafe[index])
-  if (dangerousFiles.length > 0) {
-    warn(warningMessage)
-    markdown(generateMarkdown(listTitle, dangerousFiles))
+  for (const dangerousFile of dangerousFiles) {
+    warn(warningMessage, dangerousFile, await getFileNumLines(dangerousFile))
   }
 }
 
@@ -73,11 +70,11 @@ function extractJsdoc(content: string): string[] {
 }
 
 /**
- * Generate a markdown list listing files that have been modified without the JSDoc being updated
- * @param title List title
- * @param files Filenames
- * @returns Markdown list
+ * Count the number of lines a file contains
+ * @param file Filename
+ * @returns Number of lines the file contains
  */
-function generateMarkdown(title: string, files: string[]): string {
-  return `${title}\n\n${files.map(file => `- ${file}`).join("\n")}`
+async function getFileNumLines(file: string): Promise<number> {
+  const diff = await danger.git.diffForFile(file)
+  return diff?.after.split("\n").length || 0
 }
