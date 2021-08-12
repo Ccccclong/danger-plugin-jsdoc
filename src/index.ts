@@ -17,7 +17,7 @@ interface Options {
 const defaultOptions: Options = {
   includes: ["**/*.js"],
   excludes: [],
-  warningMessage: "😶 Some js files have been changed without updating the JSDoc",
+  warningMessage: "Some js files have been changed without updating the JSDoc",
 }
 
 /**
