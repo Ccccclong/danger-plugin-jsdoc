@@ -76,5 +76,5 @@ function extractJsdoc(content: string): string[] {
  */
 async function getFileNumLines(file: string): Promise<number> {
   const diff = await danger.git.diffForFile(file)
-  return diff?.after.split("\n").length || 0
+  return diff ? diff.after.split("\n").length - 1 : 1
 }
